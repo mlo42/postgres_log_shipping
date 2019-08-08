@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+
+  db-master:
+    build: ./master
+    restart: always
+    environment:
+      PG_REP_USER: replicator
+      PG_REP_PASSWORD: replicator
+      POSTGRES_PASSWORD: pwdmaster
+      ARCHIVE_DIR: /mnt/server/archivedir
+    volumes:
+      - ./archivedir:/mnt/server/archivedir
+    ports:
+      - 5432:5432
+      
+  slave-ubuntu:
+    build: ./slave
+    environment:
+      POSTGRES_PASSWORD: pwdslave
+      ARCHIVE_DIR: /mnt/server/archivedir
+    volumes:
+      - ./archivedir:/mnt/server/archivedir
+    ports:
+      - 25432:5432
+
+  #db-slave:
+    # https://www.postgresql.org/docs/11/archive-recovery-settings.html
+
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
+
+#volumes:
+#  archive_dir:
+#    driver: local
