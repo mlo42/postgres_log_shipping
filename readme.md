@@ -13,7 +13,7 @@ docker-compose up
 # login the slave to do the slave configuration using a base backup and wal files
 docker exec -u postgres -it postgres_wal_test_slave-ubuntu_1 bash
 
-# full backup from master to directory on slave:
+# full backup from master to directory on slave (manual password input needed!)
 chmod -R 750 /var/lib/postgresql/db_master/
 rm -rf /var/lib/postgresql/db_master/* 
 pg_basebackup -h db-master -U replicator \
@@ -24,6 +24,7 @@ pg_basebackup -h db-master -U replicator \
 # not needed on fresh install (no db made yet) - otherwise stop the slave db first:
 # /usr/lib/postgresql/11/bin/pg_ctl -D /var/lib/postgresql/data stop
 
+# copy the full backpu data from master over slave:
 rm -rf /var/lib/postgresql/data/* \
 && chmod -R 750 /var/lib/postgresql/data/ \
 && cp -R /var/lib/postgresql/db_master/* /var/lib/postgresql/data/ \
