@@ -19,4 +19,5 @@ RUN chown barman:barman /var/lib/barman/.pgpass \
 
 # wait to allow connection to allow execution of interactive commands
 # (no postgres is started automatically).
-CMD ["sleep", "infinity"]
+CMD cron -f
+#CMD ["sleep", "infinity"]

@@ -1,1 +1,2 @@
 postgres_log_shipping_db-master_1:5432:replication:replicator:replicator
+postgres_log_shipping_db-master_1:5432:postgres:barman:barman
