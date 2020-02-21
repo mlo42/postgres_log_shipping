@@ -25,6 +25,11 @@ services:
     ports:
       - 25432:5432
 
+  barman:
+    build: ./barman
+    ports:
+      - 35432:5432
+    
   #db-slave:
     # https://www.postgresql.org/docs/11/archive-recovery-settings.html
 

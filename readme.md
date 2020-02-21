@@ -11,9 +11,10 @@ following https://wiki.postgresql.org/wiki/Hot_Standby#Start_your_standby_server
 docker-compose up
 
 # login the slave to do the slave configuration using a base backup and wal files
-docker exec -u postgres -it postgres_wal_test_slave-ubuntu_1 bash
+docker exec -u postgres -it postgres_log_shipping_slave-ubuntu_1 bash
 
 # full backup from master to directory on slave (manual password input needed!)
+mkdir /var/lib/postgresql/db_master/
 chmod -R 750 /var/lib/postgresql/db_master/
 rm -rf /var/lib/postgresql/db_master/* 
 pg_basebackup -h db-master -U replicator \
@@ -40,7 +41,30 @@ echo  restore_command = \'cp /mnt/server/archivedir/%f %p\' >> /var/lib/postgres
 echo  standby_mode = \'on\' >> /var/lib/postgresql/data/recovery.conf
 
 # start the slave/standby db:
-/usr/lib/postgresql/11/bin/pg_ctl -D /var/lib/postgresql/data  -l logfile start
+/usr/lib/postgresql/11/bin/pg_ctl -D /var/lib/postgresql/data  -l /tmp/logfile start
 ```
 
 after this, all changes from the master are propagated from the master to the slave (as soon as the wal files are written on the master)
+
+## barman setup
+
+following: http://docs.pgbarman.org/release/2.10/#setup-of-a-new-server-in-barman
+
+
+```bash
+docker exec -it -u postgres postgres_log_shipping_barman_1 bash
+psql -c 'SELECT version()' -U barman -h postgres_log_shipping_db-master_1  postgres
+```
+
+```bash
+psql -U replicator -h postgres_log_shipping_db-master_1 -c "IDENTIFY_SYSTEM" replication=1
+```
+
+.pgpass
+```txt
+postgres_log_shipping_db-master_1:5432:replication:replicator:replicator
+```
+
+```bash
+barman receive-wal master
+```
