@@ -12,7 +12,7 @@ RUN apt update \
 # create /etc/barman.d/master.conf
 COPY master.conf /etc/barman.d/master.conf
 
-# create .pgpass file for password for replication user and remove access for group and other
+# create .pgpass file for passwords for replication and barman user and remove access for group and other
 COPY pgpass /var/lib/barman/.pgpass
 RUN chown barman:barman /var/lib/barman/.pgpass \
  && chmod 600 /var/lib/barman/.pgpass

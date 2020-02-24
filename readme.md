@@ -68,3 +68,27 @@ postgres_log_shipping_db-master_1:5432:replication:replicator:replicator
 ```bash
 barman receive-wal master
 ```
+
+# only for testing since testing database does not have live changes
+```bash
+barman switch-xlog --force --archive master
+```
+
+# --wait to avoid: WARNING: IMPORTANT: this backup is classified as WAITING_FOR_WALS, meaning that Barman has not received yet all the required WAL files for the backup consistency. 
+#This is a common behaviour in concurrent backup scenarios, and Barman automatically set the backup as DONE once all the required WAL files have been archived.
+# Hint: execute the backup command with '--wait'
+```bash
+barman backup master --wait
+```
+
+# stop postgres on slave
+```bash
+su - postgres -c '/usr/lib/postgresql/11/bin/pg_ctl stop -D /var/lib/postgresql/data'
+```
+
+# restore
+```bash
+barman recovery \
+  --remote-ssh-command “ssh postgres@postgres_log_shipping_slave-ubuntu_1” \
+  master latest /var/lib/postgresql/data
+```

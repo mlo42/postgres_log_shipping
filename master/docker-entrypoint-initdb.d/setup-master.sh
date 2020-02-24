@@ -23,8 +23,8 @@ echo "setup postgresql.conf"
 cat >> ${PGDATA}/postgresql.conf <<EOF
 # log file shipping configuration:
 wal_level = replica
-archive_mode = on
-archive_command = 'test ! -f ${ARCHIVE_DIR}/%f && cp %p ${ARCHIVE_DIR}/%f'
+#archive_mode = on
+# archive_command = 'test ! -f ${ARCHIVE_DIR}/%f && cp %p ${ARCHIVE_DIR}/%f'
 # short archive_timeout for demonstration mode - adapt as needed:
 archive_timeout = 20
 max_wal_senders = 2
